@@ -46,7 +46,7 @@ public class PreferencesScreen implements Screen{
 		stage.addActor(table);
 
 		// Using GDX Skins and Scene2D UI, so AWESOME!
-		Skin skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+		Skin skin = new Skin(Gdx.files.internal("skin/neon-ui.json"));
 
 		// UI Elements
 		//volume Music
@@ -96,7 +96,7 @@ public class PreferencesScreen implements Screen{
 		});
 
 		// return to main screen button
-		final TextButton backButton = new TextButton("Back", skin, "small"); // the extra argument here "small" is used to set the button to the smaller version instead of the big default version
+		final TextButton backButton = new TextButton("Back", skin); // the extra argument here "small" is used to set the button to the smaller version instead of the big default version
 		backButton.addListener(new ChangeListener() {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {

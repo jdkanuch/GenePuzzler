@@ -25,7 +25,7 @@ public class MenuScreen implements Screen {
 		// Skinning with AssetManager
 		parent.assMan.queueAddSkin();
 		parent.assMan.manager.finishLoading();
-		skin = parent.assMan.manager.get("skin/glassy-ui.json");
+		skin = parent.assMan.manager.get("skin/neon-ui-changed.json");
 		
 				
 

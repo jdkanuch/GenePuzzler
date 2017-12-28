@@ -38,10 +38,11 @@ public class GameAssetManager {
 	}
 	
 	// Skin
-	public final String skin = "skin/glassy-ui.json";
+	public final String skin = "skin/neon-ui-changed.json";
+	//public final String gridSkin = "skin/neon-ui-changed.json";
 		
 	public void queueAddSkin(){
-		SkinParameter params = new SkinParameter("skin/glassy-ui.atlas");
+		SkinParameter params = new SkinParameter("skin/neon-ui-changed.atlas");
 		manager.load(skin, Skin.class, params);
 	}
 	
