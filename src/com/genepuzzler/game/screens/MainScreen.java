@@ -63,7 +63,7 @@ public class MainScreen implements Screen {
 		
 		superTable.setFillParent(true);
 		gridTable.setDebug(true);
-		outputTable.setDebug(true);
+		outputTable.setDebug(false);
 			
 		
 		// Simple Widget
@@ -84,11 +84,14 @@ public class MainScreen implements Screen {
 		
 		// Creating the blank box
 		final Label decimalOutLable = new Label(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()),skin);
-		Texture boxTexture = new Texture(Gdx.files.internal("images/grid-button-_0000_ON.png"));
-		Image boxImage = new Image();
-		boxImage.setDrawable(new TextureRegionDrawable(new TextureRegion(boxTexture)));
-		boxImage.setSize(boxTexture.getWidth(), boxTexture.getHeight());
-		boxImage.setColor(1,0,0,1);
+		Texture triTex = new Texture(Gdx.files.internal("images/triangle-symbol.png"));
+		Image triImage0 = new Image();
+		Image triImage1 = new Image();
+		Image triImage2 = new Image();
+		triImage0.setDrawable(new TextureRegionDrawable(new TextureRegion(triTex)));
+		triImage0.setSize(triTex.getWidth(), triTex.getHeight());
+		triImage0.setColor(1,0,0,1);
+		triImage0.setVisible(false);
 		
 		// Listeners for Grid
 		cellBox0.addListener( new EventListener() {
@@ -154,18 +157,19 @@ public class MainScreen implements Screen {
 		gridTable.add(cellBox4);
 		gridTable.add(cellBox5);
 		gridTable.row();
+		gridTable.add(new Label("",skin));
 		
 		
 		// Output Table
 		//outputTable.add(cellOutLabel0).width(100).height(100);
-		outputTable.add(boxImage);
-		outputTable.add(cellOutLabel1).width(100).height(100);
+		outputTable.add(triImage0).width(100).height(100);
+		//outputTable.add(triImage);
 		outputTable.row();
-		outputTable.add(cellOutLabel2).width(100).height(100);
-		outputTable.add(cellOutLabel3).width(100).height(100);
+		outputTable.add(triImage1).width(100).height(100);
+		//outputTable.add(cellOutLabel3).width(100).height(100);
 		outputTable.row();
-		outputTable.add(cellOutLabel4).width(100).height(100);
-		outputTable.add(cellOutLabel5).width(100).height(100);
+		outputTable.add(triImage2).width(100).height(100);
+		//outputTable.add(cellOutLabel5).width(100).height(100);
 		outputTable.row();
 		outputTable.add(decimalOutLable);
 		
