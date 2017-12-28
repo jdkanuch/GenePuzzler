@@ -2,7 +2,7 @@ package com.genepuzzler.game.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Colors;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -28,6 +28,12 @@ public class MainScreen implements Screen {
 	private ShapeRenderer sr;
 
 
+	// Static Textures
+	static final Texture triTexReg = new Texture(Gdx.files.internal("images/triangle-symbol-reg.png"));
+	static final Texture triTexInv = new Texture(Gdx.files.internal("images/triangle-symbol-inv.png"));
+	static final Texture cirTex = new Texture(Gdx.files.internal("images/circle-symbol.png"));
+	static final Texture cirTexHollow = new Texture(Gdx.files.internal("images/circle-symbol-02.png"));
+	
 
 	public MainScreen(GenePuzzler genePuzzler){
 		parent = genePuzzler; 
@@ -82,31 +88,47 @@ public class MainScreen implements Screen {
 		final Label cellOutLabel4 = new Label(setCellOut(cellBox4),skin);
 		final Label cellOutLabel5 = new Label(setCellOut(cellBox5),skin);
 		
-		// Creating the blank box
+		// Creating the triangles box
 		final Label decimalOutLable = new Label(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()),skin);
-		Texture triTex = new Texture(Gdx.files.internal("images/triangle-symbol.png"));
-		Image triImage0 = new Image();
-		Image triImage1 = new Image();
-		Image triImage2 = new Image();
-		triImage0.setDrawable(new TextureRegionDrawable(new TextureRegion(triTex)));
+		
+		
+		///final Image triImage0 = new Image();
+		final Image image0 = new Image();
+		final Image image1 = new Image();
+		final Image image2 = new Image();
+		
+		
+		/*
 		triImage0.setSize(triTex.getWidth(), triTex.getHeight());
-		triImage0.setColor(1,0,0,1);
-		triImage0.setVisible(false);
+		triImage1.setSize(triTex.getWidth(), triTex.getHeight());
+		
+		cirImage0.setSize(cirTex.getWidth(), cirTex.getHeight());
+		*/
+		
+		image0.setVisible(false);
+		image1.setVisible(false);
+		image2.setVisible(false);
 		
 		// Listeners for Grid
 		cellBox0.addListener( new EventListener() {
 			@Override
-			public boolean handle(Event event) {				
-				cellOutLabel0.setText(setCellOut(cellBox0));
-				decimalOutLable.setText(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()));
+			public boolean handle(Event event) {
+				
+				image0.setVisible(true);
+				int i = getInteger(cellBox0,cellBox1);
+				setNucliotideSymbol(i,image0);
+				//cellOutLabel0.setText(setCellOut(cellBox0));
+				//decimalOutLable.setText(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()));
 				return false;
 			}
 		});
 		cellBox1.addListener( new EventListener() {
 			@Override
 			public boolean handle(Event event) {				
-				cellOutLabel1.setText(setCellOut(cellBox1));
-				decimalOutLable.setText(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()));
+				int i = getInteger(cellBox0,cellBox1);
+				setNucliotideSymbol(i,image0);
+				//cellOutLabel1.setText(setCellOut(cellBox1));
+				//decimalOutLable.setText(setDecimalOut(cellOutLabel0.getText(),cellOutLabel1.getText(),cellOutLabel2.getText(),cellOutLabel3.getText(),cellOutLabel4.getText(),cellOutLabel5.getText()));
 				return false;
 			}
 		});
@@ -162,13 +184,13 @@ public class MainScreen implements Screen {
 		
 		// Output Table
 		//outputTable.add(cellOutLabel0).width(100).height(100);
-		outputTable.add(triImage0).width(100).height(100);
+		outputTable.add(image0).width(100).height(100);	
 		//outputTable.add(triImage);
 		outputTable.row();
-		outputTable.add(triImage1).width(100).height(100);
+		outputTable.add(image1).width(100).height(100);
 		//outputTable.add(cellOutLabel3).width(100).height(100);
 		outputTable.row();
-		outputTable.add(triImage2).width(100).height(100);
+		outputTable.add(image2).width(100).height(100);
 		//outputTable.add(cellOutLabel5).width(100).height(100);
 		outputTable.row();
 		outputTable.add(decimalOutLable);
@@ -231,6 +253,37 @@ public class MainScreen implements Screen {
 		} else {
 			return "0";
 		}
+	}
+	
+	public void setNucliotideSymbol(int i, Image image){
+		image.setColor(Color.GOLD);
+		
+		switch(i){
+		case 0:
+			// set for U
+			image.setDrawable(new TextureRegionDrawable(new TextureRegion(triTexInv)));
+			break;
+		case 1:
+			// set for C
+			image.setDrawable(new TextureRegionDrawable(new TextureRegion(cirTex)));
+			break;
+		case 2:
+			// set for A
+			image.setDrawable(new TextureRegionDrawable(new TextureRegion(triTexReg)));
+			break;
+		case 3:
+			// set for G
+			image.setDrawable(new TextureRegionDrawable(new TextureRegion(cirTexHollow)));
+			break;
+		}
+	}
+	
+	public int getInteger(CheckBox c0, CheckBox c1){
+		int n0 = c0.isChecked() ? 1 : 0;
+		int n1 = c1.isChecked() ? 1 : 0;
+		int n = Integer.parseInt(""+n0+n1,2);
+		
+		return n;
 	}
 	
 	public String setDecimalOut(com.badlogic.gdx.utils.StringBuilder stringBuilder, com.badlogic.gdx.utils.StringBuilder stringBuilder2, com.badlogic.gdx.utils.StringBuilder stringBuilder3, com.badlogic.gdx.utils.StringBuilder stringBuilder4, com.badlogic.gdx.utils.StringBuilder stringBuilder5, com.badlogic.gdx.utils.StringBuilder stringBuilder6){
