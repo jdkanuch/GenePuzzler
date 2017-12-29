@@ -1,0 +1,27 @@
+{
+	"aminoList" 	:	["f","f","l","l","s","s","s","s","y","y","x","x","c","c","x","w","l","l","l","l","p","p","p","p","h","h","q","q","r","r","r","r","i","i","i","m","t","t","t","t","n","n","k","k","s","s","r","r","v","v","v","v","a","a","a","a","d","d","e","e","g","g","g","g"],
+	"colorMapping" : {
+		"f" 	:	[0,0,1],
+		"l"  	: 	"CHARTREUSE",
+		"s" 	:	"LIME",
+		"y" 	:	"FOREST",
+		"x" 	:	"YELLOW",
+		"c" 	:	"GOLDENROD",
+		"w"	:	"ORANGE",
+		"p"	:	"FIREBRICK",
+		"h"	:	"RED",
+		"q"	:	"SCARLET",
+		"r"	:	"CORAL",
+		"i"		:	"MAGENTA",
+		"m"	:	"PURPLE",
+		"t"	:	"VIOLET",
+		"n"	:	"MAROON",
+		"k"	:	"SKY",
+		"v"	:	"ROYAL",
+		"a"	:	"NAVY",
+		"d"	:	"BLUE",
+		"e"	:	"CYAN",
+		"g"	:	"TEAL"	
+		
+	}
+}

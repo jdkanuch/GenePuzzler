@@ -1,5 +1,7 @@
 package com.genepuzzler.game.systems;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -11,13 +13,20 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.genepuzzler.game.GenePuzzler;
 
 public class PuzzleGameSystem extends Table{
 	GenePuzzler parent;
 
+	JsonReader reader = new JsonReader();
+	JsonValue gm = reader.parse(Gdx.files.internal("data/gene-mappings.json"));
+	
+	
+	
 	private Skin skin;
 
 
@@ -26,6 +35,7 @@ public class PuzzleGameSystem extends Table{
 	static final Texture triTexInv = new Texture(Gdx.files.internal("images/triangle-symbol-inv.png"));
 	static final Texture cirTex = new Texture(Gdx.files.internal("images/circle-symbol.png"));
 	static final Texture cirTexHollow = new Texture(Gdx.files.internal("images/circle-symbol-02.png"));
+	static final Texture hexTex = new Texture(Gdx.files.internal("images/hex-symbol.png"));
 
 
 	Table gridTable = new Table();
@@ -43,6 +53,8 @@ public class PuzzleGameSystem extends Table{
 	final CheckBox cellBox5 ;
 
 
+	TextButton saveAA;
+	
 	Label decimalOutLable;
 
 
@@ -50,8 +62,14 @@ public class PuzzleGameSystem extends Table{
 	final Image image1 = new Image();
 	final Image image2 = new Image();
 
+	final Image hex = new Image();
+	
+	// Definitions for Amino Processing
 	private int[] cellOutInt = {0,0,0,0,0,0};	
-			
+	char[] aminoCodonCodes;
+	String[] aminoColors;
+	
+	
 
 	public PuzzleGameSystem(GenePuzzler genePuzzler){
 		// Skinning with AssetManager
@@ -61,8 +79,16 @@ public class PuzzleGameSystem extends Table{
 		parent.assMan.manager.finishLoading();
 		skin = parent.assMan.manager.get("skin/neon-ui-changed.json");
 
-
-
+		// Getting the amino Codes
+		
+		aminoCodonCodes = gm.get("aminoList").asCharArray();
+		//aminoColors = gm.get("colorMapping").asStringArray();
+		
+		//System.out.println(gm.get("aminoList"));
+//		for(JsonValue entry = gm.child; entry !=null; entry = entry.next()){
+//			System.out.println(entry.child);
+//		}
+		
 		// Table Manager
 		setFillParent(true);
 
@@ -92,6 +118,12 @@ public class PuzzleGameSystem extends Table{
 		image0.setVisible(false);
 		image1.setVisible(false);
 		image2.setVisible(false);
+		
+		hex.setVisible(false);
+		
+		image0.setColor(Color.FOREST);
+		image1.setColor(Color.FOREST);
+		image2.setColor(Color.FOREST);
 
 
 		cellBox0 = new CheckBox(null, skin);
@@ -101,19 +133,8 @@ public class PuzzleGameSystem extends Table{
 		cellBox4 = new CheckBox(null, skin);
 		cellBox5 = new CheckBox(null, skin);
 
-
-		// Creating the Amino Output Label
-//		cellOutLabel0 = new Label(setCellOut(cellBox0),skin);
-//		cellOutLabel1 = new Label(setCellOut(cellBox1),skin);
-//		cellOutLabel2 = new Label(setCellOut(cellBox2),skin);
-//		cellOutLabel3 = new Label(setCellOut(cellBox3),skin);
-//		cellOutLabel4 = new Label(setCellOut(cellBox4),skin);
-//		cellOutLabel5 = new Label(setCellOut(cellBox5),skin);
-
+		saveAA = new TextButton("Commit",skin);
 		
-		
-		
-
 		// Adding to the tables
 		// Grid Table		
 		gridTable.add(cellBox0);
@@ -125,7 +146,7 @@ public class PuzzleGameSystem extends Table{
 		gridTable.add(cellBox4);
 		gridTable.add(cellBox5);
 		gridTable.row();
-		gridTable.add(new Label("",skin));
+		gridTable.add(new Label("",skin)).height(100);
 
 		decimalOutLable	= new Label("",skin);
 
@@ -136,7 +157,9 @@ public class PuzzleGameSystem extends Table{
 		outputTable.row();
 		outputTable.add(image2).width(100).height(100);
 		outputTable.row();
-		outputTable.add(decimalOutLable);
+		//outputTable.add(decimalOutLable);
+		outputTable.add(hex).width(100).height(100);
+		outputTable.add(saveAA).width(100).height(100);
 
 	}
 
@@ -157,6 +180,7 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[0] = setCellOut(cellBox0);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
@@ -171,6 +195,7 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[1] = setCellOut(cellBox1);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
@@ -185,6 +210,7 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[2] = setCellOut(cellBox2);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
@@ -199,6 +225,7 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[3] = setCellOut(cellBox3);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
@@ -213,6 +240,7 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[4] = setCellOut(cellBox4);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
@@ -227,16 +255,10 @@ public class PuzzleGameSystem extends Table{
 				// Codon Updating
 				cellOutInt[5] = setCellOut(cellBox5);
 				decimalOutLable.setText(setDecimalOut(cellOutInt));
+				setCodonSymbol(decimalOutLable.getText().toString());
 				return false;
 			}
 		});
-
-
-
-
-
-
-
 	}
 
 
@@ -253,11 +275,8 @@ public class PuzzleGameSystem extends Table{
 		for(int i=0;i<a.length;i++){
 			binValue.append(a[i]);
 		}
-		System.out.println(binValue.toString());
-		int ci = Integer.parseInt(binValue.toString(), 2);
-		char[] aminoCodonCodes = {
-				'f','f','l','l','s','s','s','s','y','y','*','*','c','c','*','w','l','l','l','l','p','p','p','p','h','h','q','q','r','r','r','r','i','i','i','m','t','t','t','t','n','n','k','k','s','s','r','r','v','v','v','v','a','a','a','a','d','d','e','e','g','g','g','g'
-		};
+		
+		int ci = Integer.parseInt(binValue.toString(), 2);		
 		return ""+aminoCodonCodes[ci];
 	}
 
@@ -271,7 +290,7 @@ public class PuzzleGameSystem extends Table{
 	}
 
 	public void setNucliotideSymbol(int i, Image image){
-		image.setColor(Color.GOLD);
+		
 
 		switch(i){
 		case 0:
@@ -293,5 +312,20 @@ public class PuzzleGameSystem extends Table{
 		}
 	}
 
+	public void setCodonSymbol(String aa){
+		hex.setDrawable(new TextureRegionDrawable(new TextureRegion(hexTex)));
+		hex.setVisible(true);
+		String[] blueCodes = {"f","l","s","y","x","c","w"};
+		String[] redCodes = {"r","i","m","t","n","k","v"};
+		String[] yellowCodes = {"a","d","e","g","p","h","q"};
+		if(Arrays.asList(blueCodes).contains(aa)){
+			hex.setColor(Color.BLUE);
+		} else if(Arrays.asList(redCodes).contains(aa)){
+			hex.setColor(Color.SCARLET);
+		} else if(Arrays.asList(yellowCodes).contains(aa)){
+			hex.setColor(Color.GOLD);
+		}
+		
+	}
 
 }
